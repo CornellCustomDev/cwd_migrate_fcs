@@ -1,0 +1,62 @@
+id: cwd_oldalias_redirects
+migration_group: cwd_fcs_post
+label: 'Source site URL aliases site into redirects'
+source:
+  plugin: cwd_node_path_redirect
+  constants:
+    prefix: 'node'
+process:
+  # don't include rid, probably
+  # rid: rid
+  # URL aliases don't have UIDs, so we'll just use user 1.
+  uid:
+    plugin: default_value
+    default_value: 1
+  language:
+    plugin: default_value
+    source: language
+    default_value: und
+  status_code:
+    plugin: default_value
+    default_value: 301
+  _d8_nid:
+    -
+      plugin: migration_lookup
+      source: nid_from_path
+      migration:
+        - cwd_node_announcement
+        - cwd_node_basic_page
+        - cwd_node_department
+        - cwd_node_landing_page_grid
+        - cwd_node_landing_page_list
+        - cwd_node_project
+        - cwd_node_service
+        - cwd_node_three_column_page
+        - cwd_node_two_column_page
+        - cwd_node_webform
+      no_stub: true
+    -
+      plugin: skip_on_empty
+      method: row
+  _redirect_uri:
+    plugin: concat
+    source:
+      - constants/prefix
+      - '@_d8_nid'
+    delimiter: /
+  redirect_source/path: alias
+  redirect_redirect/uri:
+    plugin: d7_path_redirect
+    source:
+      - '@_redirect_uri'
+destination:
+  plugin: entity:redirect
+migration_dependencies:
+  required:
+    - cwd_node_announcement
+    - cwd_node_basic_page
+    - cwd_node_department
+    - cwd_node_landing_page_list
+    - cwd_node_service
+    - cwd_node_project
+    - cwd_node_webform

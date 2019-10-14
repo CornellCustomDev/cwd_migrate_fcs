@@ -1,0 +1,11 @@
+name: CWD Migrate - FCS
+type: module
+description: 'Migration for FCS D7 to D8'
+package: Custom
+core: 8.x
+dependencies:
+  - migrate
+  - migrate_drupal
+  - migrate_plus
+  - migrate_tools
+  - webform_migrate

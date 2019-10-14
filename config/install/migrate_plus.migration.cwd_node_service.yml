@@ -1,0 +1,20 @@
+id: cwd_node_service
+migration_group: cwd_fcs_nodes
+label: 'Node: Service Page into Service'
+source:
+  plugin: d7_node_wb_access
+  node_type: service_page
+process:
+  body:
+    plugin: cwd_rich_text_dom_process
+    source: body
+  field_contact_info:
+    plugin: cwd_rich_text_dom_process
+    source: field_primary_contact_informatio
+  field_tools:
+    plugin: cwd_rich_text_dom_process
+    source: field_related_links
+destination:
+  plugin: 'entity:node'
+  default_bundle: service
+dependencies: {  }

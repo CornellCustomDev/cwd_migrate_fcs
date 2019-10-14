@@ -1,0 +1,14 @@
+id: cwd_fcs_post
+label: 'CWD Migrate - Post'
+description: 'Post-node migrations.'
+source_type: 'Drupal 7 Site'
+shared_configuration:
+  source:
+    key: migrate_fcs_db
+dependencies:
+  enforced:
+    module:
+      - cwd_migrate_fcs
+      - migrate_drupal
+      - migrate_plus
+      - migrate_tools

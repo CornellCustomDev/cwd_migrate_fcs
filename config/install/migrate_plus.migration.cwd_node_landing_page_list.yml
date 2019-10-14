@@ -1,0 +1,27 @@
+id: cwd_node_landing_page_list
+migration_group: cwd_fcs_nodes
+label: 'Node: Landing Page List into Basic page'
+source:
+  plugin: d7_node_wb_access
+  node_type: landing_page_list
+process:
+  _source_body:
+    plugin: cwd_rich_text_dom_process
+    source: body/0/value
+    method: string
+  _source_field_list:
+    plugin: cwd_rich_text_dom_process
+    source: field_list/0/value
+    method: string
+  body/value:
+    plugin: concat
+    source:
+      - '@_source_body'
+      - '@_source_field_list'
+  body/format:
+    plugin: default_value
+    default_value: filtered_html
+destination:
+  plugin: 'entity:node'
+  default_bundle: page
+dependencies: {  }

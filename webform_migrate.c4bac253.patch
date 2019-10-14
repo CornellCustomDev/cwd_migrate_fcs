@@ -1,0 +1,16 @@
+diff --git web/modules/contrib/webform_migrate/src/Plugin/migrate/source/d7/D7Webform.php web/modules/contrib/webform_migrate/src/Plugin/migrate/source/d7/D7Webform.php
+index d7d00808..f5706e95 100644
+--- web/modules/contrib/webform_migrate/src/Plugin/migrate/source/d7/D7Webform.php
++++ web/modules/contrib/webform_migrate/src/Plugin/migrate/source/d7/D7Webform.php
+@@ -512,8 +512,10 @@ private function buildFormElements($nid) {
+         $markup .= "$indent  '#title': '" . str_replace('\'', "''", $element['name']) . "' \n";
+         if ($element['type'] == 'fieldset') {
+           $markup .= "$indent  '#description': \"" . $description . "\"\n";
++          $markup .= "$indent  '#description_display': before\n";
+         } else {
+-          $markup .= "$indent  '#help': \"" . $description . "\"\n";
++          $markup .= "$indent  '#description': \"" . $description . "\"\n";
++          $markup .= "$indent  '#description_display': after\n";
+         }
+       }
+       if (!empty($element['required'])) {

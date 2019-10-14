@@ -1,0 +1,52 @@
+dependencies:
+  enforced:
+    module:
+      - cwd_migrate_fcs
+      - migrate_drupal
+      - migrate_plus
+      - migrate_tools
+id: cwd_fcs_nodes
+label: 'CWD Migrate - FCS - node content'
+description: 'Shared plugins and configurations for nodes.'
+source_type: 'Drupal 7 site'
+shared_configuration:
+  source:
+    key: migrate_fcs_db
+  process:
+    nid: nid
+    title: title
+    uid:
+      -
+        plugin: migration_lookup
+        source: node_uid
+        migration: cwd_user
+        no_stub: true
+      -
+        plugin: default_value
+        default_value: '0'
+    status:
+      plugin: skip_on_empty
+      method: row
+      source: status
+    created: created
+    changed: changed
+    revision_uid:
+      -
+        plugin: migration_lookup
+        source: node_uid
+        migration: cwd_user
+        no_stub: true
+      -
+        plugin: default_value
+        default_value: '0'
+    revision_log: log
+    revision_timestamp: timestamp
+    field_security_roles:
+      plugin: migration_lookup
+      source: wba_termids
+      migration: cwd_term_secgroup
+migration_dependencies:
+  required:
+    - cwd_user
+    - cwd_file
+    - cwd_term_secgroup

@@ -1,0 +1,23 @@
+id: cwd_node_department
+migration_group: cwd_fcs_nodes
+label: 'Node: Department Page into Department'
+source:
+  plugin: d7_node_wb_access
+  node_type: department_page
+process:
+  body:
+    plugin: cwd_rich_text_dom_process
+    source: body
+  field_contact_info:
+    plugin: cwd_rich_text_dom_process
+    source: field_primary_contact_inf_dept
+  field_tools:
+    plugin: cwd_rich_text_dom_process
+    source: field_tools
+  field_sb_nav_textarea:
+    plugin: cwd_rich_text_dom_process
+    source: field_left_navigation
+destination:
+  plugin: 'entity:node'
+  default_bundle: department
+dependencies: {  }

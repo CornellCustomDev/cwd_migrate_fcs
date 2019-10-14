@@ -1,0 +1,27 @@
+diff --git web/modules/contrib/webform_migrate/src/Plugin/migrate/source/d7/D7Webform.php web/modules/contrib/webform_migrate/src/Plugin/migrate/source/d7/D7Webform.php
+index f5706e95..650fce61 100644
+--- web/modules/contrib/webform_migrate/src/Plugin/migrate/source/d7/D7Webform.php
++++ web/modules/contrib/webform_migrate/src/Plugin/migrate/source/d7/D7Webform.php
+@@ -432,11 +432,11 @@ private function buildFormElements($nid) {
+               $add_types = explode(',', $extra['filtering']['addextensions']);
+               $types = array_unique(array_merge($types, array_map('trim', $add_types)));
+             }
+-            $exts = implode(',', $types);
++            $exts = implode(' ', $types);
+           }
+           $filesize = '';
+           if (!empty($extra['filtering']['size'])) {
+-            $filesize = $extra['filtering']['size'] / 1000;
++            $filesize = $extra['filtering']['size'];
+           }
+           $markup .= "$indent  '#type': managed_file\n";
+           $markup .= "$indent  '#max_filesize': '$filesize'\n";
+@@ -510,7 +510,7 @@ private function buildFormElements($nid) {
+       }
+       if ($element['type'] != 'pagebreak' && $element['type'] != 'markup') {
+         $markup .= "$indent  '#title': '" . str_replace('\'', "''", $element['name']) . "' \n";
+-        if ($element['type'] == 'fieldset') {
++        if ($element['type'] == 'fieldset' || $element['type'] == 'file') {
+           $markup .= "$indent  '#description': \"" . $description . "\"\n";
+           $markup .= "$indent  '#description_display': before\n";
+         } else {

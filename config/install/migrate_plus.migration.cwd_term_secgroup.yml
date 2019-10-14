@@ -1,0 +1,36 @@
+id: cwd_term_secgroup
+class: null
+migration_tags:
+  - 'Drupal 7'
+  - Content
+migration_group: cwd_fcs
+label: 'Taxonomy terms: Security Roles into "Security groups: Editing rights"'
+source:
+  plugin: d7_taxonomy_term
+  bundle: security_roles
+process:
+  tid: tid
+  vid:
+    plugin: default_value
+    default_value: security_roles
+  name: name
+  weight: weight
+  description/value: description
+  description/format: format
+  parent_id:
+    -
+      plugin: skip_on_empty
+      method: process
+      source: parent
+    -
+      plugin: migration_lookup
+      migration: cwd_term_secgroup
+  parent:
+    plugin: default_value
+    default_value: 0
+    source: '@parent_id'
+  changed: timestamp
+destination:
+  plugin: 'entity:taxonomy_term'
+migration_dependencies: {  }
+dependencies: {  }

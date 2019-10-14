@@ -1,0 +1,44 @@
+id: cwd_node_project
+migration_group: cwd_fcs_nodes
+label: 'Node: Front Page Projects Page into Project'
+source:
+  plugin: d7_node_wb_access
+  node_type: front_page_projects_page
+process:
+  body:
+    plugin: cwd_rich_text_dom_process
+    source: body
+  field_image:
+    plugin: sub_process
+    source: field_image
+    process:
+      target_id:
+        -
+          plugin: migration_lookup
+          migration: cwd_file
+          source: fid
+        -
+          plugin: cwd_media_generate
+          destination_bundle: image
+          destination_field: field_media_image
+  field_location_plain_text: field_location
+  field_project_type: field_type
+  field_project_size: field_project_size
+  field_project_customer: field_customer
+  field_unit_rep: field_unit_rep
+  field_cu_pm: field_cu_pm
+  field_cu_cm: field_cu_cm
+  field_project_architect: field_architect
+#  field_geotech
+#  field_mep
+  field_project_contractor: field_contractor
+  field_project_schedule:
+    plugin: cwd_rich_text_dom_process
+    source: field_project_schedule
+  field_project_statistics:
+    plugin: cwd_rich_text_dom_process
+    source: field_project_statistics
+destination:
+  plugin: 'entity:node'
+  default_bundle: project
+dependencies: {  }

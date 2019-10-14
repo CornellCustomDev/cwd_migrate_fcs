@@ -1,0 +1,27 @@
+id: cwd_node_announcement
+migration_group: cwd_fcs_nodes
+label: 'Node: Front Page Announcements Article into Announcement'
+source:
+  plugin: d7_node_wb_access
+  node_type: front_page_announcements_article
+process:
+  body:
+    plugin: cwd_rich_text_dom_process
+    source: body
+  field_image:
+    plugin: sub_process
+    source: field_image
+    process:
+      target_id:
+        -
+          plugin: migration_lookup
+          migration: cwd_file
+          source: fid
+        -
+          plugin: cwd_media_generate
+          destination_bundle: image
+          destination_field: field_media_image
+destination:
+  plugin: 'entity:node'
+  default_bundle: announcement
+dependencies: {  }

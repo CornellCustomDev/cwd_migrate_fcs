@@ -1,0 +1,64 @@
+id: cwd_gallery_image_staff
+migration_group: cwd_fcs
+label: 'Content - Gallery Item Staff images'
+source:
+  plugin: d7_node
+  node_type: node_gallery_item
+process:
+  status:
+    plugin: skip_on_empty
+    method: row
+    source: status
+  created: created
+  changed: changed
+  revision_uid:
+    -
+      plugin: migration_lookup
+      source: node_uid
+      migration: cwd_user
+      no_stub: true
+    -
+      plugin: default_value
+      default_value: '0'
+  revision_log: log
+  revision_timestamp: timestamp
+  name:
+    plugin: concat
+    source:
+      - field_first_name/0/value
+      - title
+    delimiter: " "
+  uid:
+    -
+      plugin: migration_lookup
+      source: node_uid
+      migration: cwd_user
+      no_stub: true
+    -
+      plugin: default_value
+      default_value: '0'
+  field_media_image:
+    -
+      plugin: single_value
+      source: field_gallery_media_staff
+    -
+      plugin: skip_on_empty
+      method: row
+      message: "Skipping due to empty image"
+    -
+      plugin: sub_process
+      process:
+        target_id:
+          plugin: migration_lookup
+          migration: cwd_file
+          source: fid
+        alt: alt
+        title: title
+destination:
+  plugin: 'entity:media'
+  default_bundle: gallery_image
+migration_dependencies:
+  required:
+    - cwd_user
+    - cwd_file
+dependencies: {  }

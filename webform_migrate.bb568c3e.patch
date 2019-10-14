@@ -1,0 +1,274 @@
+diff --git web/modules/contrib/webform_migrate/src/Plugin/migrate/source/d7/D7Webform.php web/modules/contrib/webform_migrate/src/Plugin/migrate/source/d7/D7Webform.php
+index 099450da..d7d00808 100644
+--- web/modules/contrib/webform_migrate/src/Plugin/migrate/source/d7/D7Webform.php
++++ web/modules/contrib/webform_migrate/src/Plugin/migrate/source/d7/D7Webform.php
+@@ -8,8 +8,6 @@
+ use Drupal\migrate\Event\MigrateRollbackEvent;
+ use Drupal\migrate\Row;
+ use Drupal\migrate_drupal\Plugin\migrate\source\DrupalSqlBase;
+-use Drupal\field\Entity\FieldConfig;
+-use Drupal\field\Entity\FieldStorageConfig;
+ use Drupal\webform\Entity\Webform;
+ use Drupal\node\Entity\Node;
+ use Symfony\Component\Yaml\Yaml;
+@@ -102,7 +100,6 @@ public function fields() {
+       'allow_draft' => $this->t('Draft submission allowed'),
+       'redirect_url' => $this->t('Redirect url'),
+       'block' => $this->t('Block'),
+-      'auto_save' => $this->t('Automatic save'),
+       'total_submit_limit' => $this->t('Total submission limit'),
+       'total_submit_interval' => $this->t('Total submission interval'),
+       'webform_id' => $this->t('Id to be used for  Webform'),
+@@ -208,6 +205,8 @@ private function buildFormElements($nid) {
+     // used by email handler.
+     $multiPage = FALSE;
+     foreach ($components as $component) {
++      // D7 allows uppercase letters in form_key, D8 does not
++      $component['form_key'] = strtolower($component['form_key']);
+       $xref[$component['cid']] = $component['form_key'];
+       if ($component['type'] == 'pagebreak') {
+         // Pagebreak found so we have a multi-page form.
+@@ -240,7 +239,7 @@ private function buildFormElements($nid) {
+           // We might get element with same form_key
+           // d8 doesn't like that so rename it.
+           if ($depth > 0) {
+-            $element['form_key'] = $element['form_key'] . '_' . $element['pid'];
++            // $element['form_key'] = $element['form_key'] . '_' . $element['pid'];
+           }
+           unset($element['pid']);
+           $elements_tree[] = $element;
+@@ -277,7 +276,7 @@ private function buildFormElements($nid) {
+     foreach ($elements_tree as $element) {
+       // Rename fieldsets to it's own unique key.
+       if ($element['type'] == 'fieldset' && strpos($element['form_key'], 'fieldset') === FALSE) {
+-        $element['form_key'] = 'fieldset_' . $element['form_key'];
++//        $element['form_key'] = 'fieldset_' . $element['form_key'];
+       }
+ 
+       // If this is a multi-page form then indent all elements one level
+@@ -297,6 +296,7 @@ private function buildFormElements($nid) {
+         $ingroup = '';
+         foreach ($items as $item) {
+           $item = trim($item);
++          $item = trim($item, '"');
+           if (!empty($item)) {
+             if (preg_match('/^<(.*)>$/', $item, $matches)) {
+               // Handle option groups.
+@@ -307,10 +307,10 @@ private function buildFormElements($nid) {
+               $option = explode('|', $item);
+               $valid_options[] = $option[0];
+               if (count($option) == 2) {
+-                $options .= "$indent$ingroup    " . $option[0] . ": '" . str_replace('\'', '"', $option[1]) . "'\n";
++                $options .= "$indent$ingroup    " . $option[0] . ": '" . str_replace('\'', "''", $option[1]) . "'\n";
+               }
+               else {
+-                $options .= "$indent$ingroup    " . $option[0] . ": '" . str_replace('\'', '"', $option[0]) . "'\n";
++                $options .= "$indent$ingroup    " . $option[0] . ": '" . str_replace('\'', "''", $option[0]) . "'\n";
+               }
+             }
+           }
+@@ -346,16 +346,16 @@ private function buildFormElements($nid) {
+           if (!empty($extra['aslist'])) {
+             $select_type = 'select';
+           }
+-          elseif (!empty($extra['multiple']) && count($extra['items']) > 1) {
+-            $select_type = 'checkboxes';
++          elseif (empty($extra['multiple'])) {
++            $select_type = 'radios';
+           }
+-          elseif (!empty($extra['multiple']) && count($extra['items']) == 1) {
++          elseif (empty($options)) {
+             $select_type = 'checkbox';
+             list($key, $desc) = explode('|', $extra['items']);
+             $markup .= "$indent  '#description': \"" . $this->cleanString($desc) . "\"\n";
+           }
+           else {
+-            $select_type = 'radios';
++            $select_type = 'checkboxes';
+           }
+           $markup .= "$indent  '#type': $select_type\n";
+           $markup .= "$indent  '#options':\n" . $options;
+@@ -369,10 +369,7 @@ private function buildFormElements($nid) {
+           break;
+ 
+         case 'number':
+-          if ($extra['type'] == 'textfield') {
+-            $markup .= "$indent  '#type': textfield\n$indent  '#size': 20\n";
+-          }
+-          elseif ($extra['type'] == 'select') {
++          if ($extra['type'] == 'select') {
+             $markup .= "$indent  '#type': select\n";
+             $markup .= "$indent  '#options':\n" . $options;
+             $min = $extra['min'];
+@@ -382,14 +379,18 @@ private function buildFormElements($nid) {
+               $markup .= "$indent    " . $value . ": " . $value . "\n";
+             }
+           }
+-          if (isset($extra['min'])) {
+-            $markup .= "$indent  '#min': " . $extra['min'] . "\n";
+-          }
+-          if (isset($extra['max'])) {
+-            $markup .= "$indent  '#max': " . $extra['max'] . "\n";
+-          }
+-          if (isset($extra['step'])) {
+-            $markup .= "$indent  '#step': " . $extra['step'] . "\n";
++          else {
++            $markup .= "$indent  '#type': number\n";
++            if (isset($extra['min'])) {
++              $markup .= "$indent  '#min': " . $extra['min'] . "\n";
++            }
++            if (isset($extra['max'])) {
++              $markup .= "$indent  '#max': " . $extra['max'] . "\n";
++            }
++            if (isset($extra['step']) || isset($extra['integer'])) {
++              $step = !empty($extra['step']) ? $extra['step'] : 1;
++              $markup .= "$indent  '#step': " . $step . "\n";
++            }
+           }
+           if (isset($extra['unique'])) {
+             $unique = ($extra['unique']) ? 'true' : 'false';
+@@ -397,8 +398,29 @@ private function buildFormElements($nid) {
+           }
+           break;
+ 
++        case 'formula':
++          $markup .= "$indent  '#type': webform_computed_twig\n";
++          $template = '{{ ';
++          $formula = preg_replace('/{(\w*)}/', 'data.$1', $element['value']);
++          if (isset($extra['precision'])) {
++            $template .= '(' . $formula . ')|number_format(' . $extra['precision'] . ')';
++          }
++          $template .= ' }}';
++          $markup .= "$indent  '#template': '" . $template . "'\n";
++          $markup .= "$indent  '#ajax': true\n";
++          $element['value'] = '';
++          break;
++
+         case 'markup':
+-          $markup .= "$indent  '#type': processed_text\n$indent  '#format': full_html\n$indent  '#text': \"" . $this->cleanString($element['value']) . "\"\n";
++          $markup .= "$indent  '#type': webform_markup\n";
++          $markup .= "$indent  '#markup': \"" . $this->cleanString($element['value']) . "\"\n";
++          if (!empty($extra['display_on']) && $extra['display_on'] != 'form') {
++            $display_on = $extra['display_on'];
++            if ($extra['display_on'] == 'display') {
++              $display_on = 'view';
++            }
++            $markup .= "$indent  '#display_on': $display_on\n";
++          }
+           $element['value'] = '';
+           break;
+ 
+@@ -426,9 +448,20 @@ private function buildFormElements($nid) {
+ 
+         case 'date':
+           $markup .= "$indent  '#type': date\n";
+-          /*if (!empty($element['value'])) {
+-          $element['value'] = date('Y-m-d', strtotime($element['value']));
+-          }*/
++          if (!empty($element['value'])) {
++            $markup .= "$indent  '#default_value': " . $element['value'] . "\n";
++          }
++          if (!empty($extra['start_date'])) {
++            $markup .= "$indent  '#date_date_min': " . $extra['start_date'] . "\n";
++          }
++          if (!empty($extra['end_date'])) {
++            $markup .= "$indent  '#date_date_max': " . $extra['end_date'] . "\n";
++          }
++          if (!empty($extra['datepicker'])) {
++            // Webform 5 uses HTML5 datepicker by default.
++            // If you want the jQuery picker use this...
++            // $markup .= "$indent  '#datepicker': true\n";
++          }
+           break;
+ 
+         case 'time':
+@@ -475,9 +508,13 @@ private function buildFormElements($nid) {
+         }
+         $markup .= "$indent  '#title_display': " . $title_display . "\n";
+       }
+-      if ($element['type'] != 'pagebreak') {
+-        $markup .= "$indent  '#title': '" . str_replace('\'', '"', $element['name']) . "' \n";
+-        $markup .= "$indent  '#description': \"" . $description . "\"\n";
++      if ($element['type'] != 'pagebreak' && $element['type'] != 'markup') {
++        $markup .= "$indent  '#title': '" . str_replace('\'', "''", $element['name']) . "' \n";
++        if ($element['type'] == 'fieldset') {
++          $markup .= "$indent  '#description': \"" . $description . "\"\n";
++        } else {
++          $markup .= "$indent  '#help': \"" . $description . "\"\n";
++        }
+       }
+       if (!empty($element['required'])) {
+         $markup .= "$indent  '#required': true\n";
+@@ -778,49 +815,8 @@ public function preImport(MigrateImportEvent $event) {}
+    * {@inheritdoc}
+    */
+   public function postImport(MigrateImportEvent $event) {
+-    // Add the Webform field to the webform content type
+-    // if it doesn't already exist.
+-    $field_storage = FieldStorageConfig::loadByName('node', 'webform');
+-    $field = FieldConfig::loadByName('node', 'webform', 'webform');
+-    if (empty($field)) {
+-      $field = entity_create('field_config', [
+-        'field_storage' => $field_storage,
+-        'bundle' => 'webform',
+-        'label' => 'Webform',
+-        'settings' => [],
+-      ]);
+-      $field->save();
+-      // Assign widget settings for the 'default' form mode.
+-      $display = entity_get_form_display('node', 'webform', 'default')->getComponent('webform');
+-      entity_get_form_display('node', 'webform', 'default')
+-        ->setComponent('webform', [
+-          'type' => $display['type'],
+-        ])
+-        ->save();
+-      // Assign display settings for the 'default' and 'teaser' view modes.
+-      $display = entity_get_display('node', 'webform', 'default')->getComponent('webform');
+-      entity_get_display('node', 'webform', 'default')
+-        ->setComponent('webform', [
+-          'label' => $display['label'],
+-          'type' => $display['type'],
+-        ])
+-        ->save();
+-      // The teaser view mode is created by the Standard profile and therefore
+-      // might not exist.
+-      $view_modes = \Drupal::entityManager()->getViewModes('node');
+-      if (isset($view_modes['teaser'])) {
+-        $display = entity_get_display('node', 'webform', 'teaser')->getComponent('webform');
+-        entity_get_display('node', 'webform', 'teaser')
+-          ->setComponent('webform', [
+-            'label' => $display['label'],
+-            'type' => $display['type'],
+-          ])
+-          ->save();
+-      }
+-    }
+-
+     // Attach any Webform created to the relevant webforms if
+-    // Webform exists and Webform exists and Webform field is empty.
++    // Webform exists and Webform field is empty.
+     $webforms = $this->query()->execute();
+     foreach ($webforms as $webform) {
+       $webform_nid = $webform['nid'];
+@@ -831,7 +827,10 @@ public function postImport(MigrateImportEvent $event) {
+         if (!empty($node) && $node->getType() == 'webform') {
+           if (empty($node->webform->target_id)) {
+             $node->webform->target_id = $webform_id;
+-            $node->webform->status = 1;
++            $node->webform->status = 'open';
++            // Don't consider this an update to the webform node
++            $node->setNewRevision(FALSE);
++            $node->setChangedTime($node->getChangedTime() + 1);
+             $node->save();
+           }
+         }
+@@ -859,6 +858,9 @@ public function postRollback(MigrateRollbackEvent $event) {
+         if (!empty($node) && $node->getType() == 'webform') {
+           if (!empty($node->webform->target_id) && $node->webform->target_id == $webform_id) {
+             $node->webform->target_id = NULL;
++            // Don't consider this an update to the webform node
++            $node->setNewRevision(FALSE);
++            $node->setChangedTime($node->getChangedTime() - 1);
+             $node->save();
+           }
+         }

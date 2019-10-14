@@ -1,0 +1,21 @@
+id: cwd_user_authmap
+migration_group: cwd_fcs
+label: Authmap records for migrated users
+source:
+  plugin: authmap
+process:
+  uid:
+    -
+      plugin: migration
+      migration: cwd_user
+      source: uid
+    -
+      plugin: skip_on_empty
+      method: row
+  provider: module
+  authname: authname
+destination:
+  plugin: authmap
+migration_dependencies:
+  required:
+    - cwd_user
