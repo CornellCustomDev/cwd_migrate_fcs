@@ -15,7 +15,9 @@ Just, dumping some links in here until if/when we do additional documentation/or
 ## Misc
 ...thoughts or whatever...
 * Key contrib modules: migrate_upgrade, migrate_tools, migrate_plus
-  * Explanation of "what's what" from @heddn on Drupal slack (2019-12-23):
+  * Explanation of "what's what" (from @heddn on Drupal slack, 2019-12-23):
     > upgrade is generating config entities from the core migrate templates.<br />
     > tools is the toolbox to execute migrations<br />
     > plus is all the process and source plugins that didn't make it into core, including config entity support
+* The URL alias handling in this migration is SUPER COOL. "Also," as of Drupal 8.8.x, aliases are different, so, FYI (from @mikelutz on Drupal slack, 2019-12-23):
+  > Prior to 8.8 there was a custom destination for url alias, but starting with 8.8.0, aliases are entities, so you can migrate them in like any entity.
