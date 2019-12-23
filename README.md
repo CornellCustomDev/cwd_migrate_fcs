@@ -11,3 +11,11 @@ Just, dumping some links in here until if/when we do additional documentation/or
   * In the months since the FCS migration, there's a new contrib module to help with migrating into the D8 media system:<br />
   https://www.drupal.org/project/migrate_media_handler
     > Provides migration process plugins to facilitate conversion of Drupal 7 file/image fields and inline file embeds in rich text, into full-fledged Drupal 8 media entities.
+
+## Misc
+...thoughts or whatever...
+* Key contrib modules: migrate_upgrade, migrate_tools, migrate_plus
+  * Explanation of "what's what" from @heddn on Drupal slack (2019-12-23):
+    > upgrade is generating config entities from the core migrate templates.<br />
+    > tools is the toolbox to execute migrations<br />
+    > plus is all the process and source plugins that didn't make it into core, including config entity support
