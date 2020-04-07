@@ -1,6 +1,9 @@
 # cwd_migrate_fcs
 A raw copy of the custom migration used for the FCS Drupal 7 to Drupal 8 project; by Alison McCauley and Eric Woods.
 
+Please note! -- Migration functionality included in Drupal core and the key contrib modules is changing and growing alllll the time, so just remember that this migration was built in summer 2019.  One example, from [Drupal core 8.9.0-beta1 release notes](https://www.drupal.org/project/drupal/releases/8.9.0-beta1):
+> A new complete node migration, d7_node_complete.yml (for Drupal 7) and d6_node_complete.yml (for Drupal 6) is now available. This migration will migrate all nodes and node revisions, including translated nodes and translated node revisions. The complete node migration will eventually replace the existing trio of node migrations. See [change record on the new 'complete node migration'](https://www.drupal.org/node/3105503) for more information on the new migrations.
+
 ## Links
 Just, dumping some links in here until if/when we do additional documentation/organization!
 * Great blog series! (didn't exist when we were building the FCS migration)<br />
