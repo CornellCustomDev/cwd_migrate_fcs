@@ -14,6 +14,9 @@ use Drupal\migrate_plus\Plugin\migrate\process\DomProcessBase;
  * Handles 2- and 3-col grids (that's all that was in use on source site).
  * Meant to be used after dom process plugin (like migrate_plus DomStrReplace).
  *
+ * NOTE: I *think* we didn't end up using this plugin, I think we ended up
+ * putting this functionality into ./CwdRichTextDomProcess.php, around line 194.
+ *
  * Example:
  *
  * @code
