@@ -13,6 +13,10 @@ use Drupal\migrate_plus\Plugin\migrate\process\DomProcessBase;
  * Context is optional (entire field value by default), xpath is required
  * and can support removing multiple nodes in the same process run.
  *
+ * NOTE: I *think* we didn't end up using this... I think we ended up
+ * putting everything into ./CwdRichTextDomProcess.php, and there's a
+ * (simpler) function in ../../../Utility.php: removeMatchedEnclosingNode()
+ *
  * Example:
  *
  * @code
