@@ -15,6 +15,21 @@ Just, dumping some links in here until if/when we do additional documentation/or
   https://www.drupal.org/project/migrate_media_handler
     > Provides migration process plugins to facilitate conversion of Drupal 7 file/image fields and inline file embeds in rich text, into full-fledged Drupal 8 media entities.
 
+## Notes from running on Pamtheon envs
+
+Comments from Eric on [Programming: Migration setup: Pantheon](https://jira.cornell.edu/browse/FCSMAIN-66) (FCS migration project Jira):
+> `site/default/settings.local.php` should be uploaded to destination site on Pantheon (via SFTP) with appropriate values for<br>
+> ```$databases['migrate_fcs_db']['default']```<br>
+> Before running the migration, be sure the source site is reachable from the browser (or run `terminus env:wake`)<br>
+> Run these steps to get things rolling:<br>
+> ```
+> drush fcs-main.ENV cr
+> drush fcs-main.ENV en cwd_migrate_fcs
+> drush fcs-main.ENV mim --group=cwd_fcs --feedback="50 items"
+> ```
+
+
+
 ## Misc
 ...thoughts or whatever...
 * Key contrib modules: migrate_upgrade, migrate_tools, migrate_plus
