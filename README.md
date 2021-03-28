@@ -28,6 +28,7 @@ Comments from Eric on [Programming: Migration setup: Pantheon](https://jira.corn
 > drush fcs-main.ENV mim --group=cwd_fcs --feedback="50 items"
 > ```
 
+**Pantheon documentation,** including recs for connecting to source/D7 database: [Running Drupal 8 Data Migrations on Pantheon Through Drush](https://pantheon.io/blog/running-drupal-8-data-migrations-pantheon-through-drush)
 
 
 ## Misc
