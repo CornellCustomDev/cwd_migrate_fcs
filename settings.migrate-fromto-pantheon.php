@@ -1,5 +1,8 @@
 <?php
 
+// PUT THIS FILE IN web/sites/default/
+// ADD "include" TO web/sites/default/settings.php (refer to pantheon docs link below, and cwd_migrate_fcs/README.md)
+
 /**
  * @file
  * Configuration file with source Drupal 7 site database credentials.
