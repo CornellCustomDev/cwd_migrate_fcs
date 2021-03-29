@@ -15,7 +15,7 @@ Just, dumping some links in here until if/when we do additional documentation/or
   https://www.drupal.org/project/migrate_media_handler
     > Provides migration process plugins to facilitate conversion of Drupal 7 file/image fields and inline file embeds in rich text, into full-fledged Drupal 8 media entities.
 
-## Notes from running on Pamtheon envs
+## Notes from running on Pantheon envs
 
 ### Pantheon documentation
 ...including recs for connecting to source/D7 database: [Running Drupal 8 Data Migrations on Pantheon Through Drush](https://pantheon.io/blog/running-drupal-8-data-migrations-pantheon-through-drush)
