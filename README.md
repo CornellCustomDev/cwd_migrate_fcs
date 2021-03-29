@@ -17,18 +17,11 @@ Just, dumping some links in here until if/when we do additional documentation/or
 
 ## Notes from running on Pamtheon envs
 
-Comments from Eric on [Programming: Migration setup: Pantheon](https://jira.cornell.edu/browse/FCSMAIN-66) (FCS migration project Jira):
-> `site/default/settings.local.php` should be uploaded to destination site on Pantheon (via SFTP) with appropriate values for<br>
-> ```$databases['migrate_fcs_db']['default']```<br>
-> Before running the migration, be sure the source site is reachable from the browser (or run `terminus env:wake`)<br>
-> Run these steps to get things rolling:<br>
-> ```
-> drush fcs-main.ENV cr
-> drush fcs-main.ENV en cwd_migrate_fcs
-> drush fcs-main.ENV mim --group=cwd_fcs --feedback="50 items"
-> ```
+### Pantheon documentation
+...including recs for connecting to source/D7 database: [Running Drupal 8 Data Migrations on Pantheon Through Drush](https://pantheon.io/blog/running-drupal-8-data-migrations-pantheon-through-drush)
 
-**Pantheon documentation,** including recs for connecting to source/D7 database: [Running Drupal 8 Data Migrations on Pantheon Through Drush](https://pantheon.io/blog/running-drupal-8-data-migrations-pantheon-through-drush)
+**REMINDER:** may need to wake up source site, if it's a multidev (i.e. especially during development):<br>
+`terminus env:wake cu-dfa.poli-migr`
 
 
 ## Misc
