@@ -40,3 +40,6 @@ Just, dumping some links in here until if/when we do additional documentation/or
   > and then when you drush cex you've got a ton of migrate configs to work with<br />
   > oh but you do want to enable all the modules that might be included in your migration before starting -- e.g. media migrations, flag, addressfield, etc -- many of these have migrations that will auto configure themselves with that first command<br />
   > and you also need to set up a database connection to the old db. Haven't looked for a good online resource recently -- we've done 20 - 30 of these, so I'm mostly copying from existing settings files, and my shell history 😉
+* Get list of available migrate plugins -- this example will output a list of source plugin keys:<br>
+`lando drush ev "print_r(array_keys(\Drupal::service('plugin.manager.migrate.source')->getDefinitions()));"`
+  * Reference: https://www.drupal.org/docs/8/api/migrate-api/migrate-source-plugins/overview-of-migrate-source-plugins#available%20migrate%20plugin%20process
