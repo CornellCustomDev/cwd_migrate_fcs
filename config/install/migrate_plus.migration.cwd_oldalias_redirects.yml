@@ -1,6 +1,8 @@
 id: cwd_oldalias_redirects
 migration_group: cwd_fcs_post
 label: 'Source site URL aliases site into redirects'
+# Source: https://deninet.com/blog/2018/04/03/migrating-path-aliases-drupal-8-redirects-part-1
+# (Source for related source plugin: https://deninet.com/blog/2018/04/22/migrating-path-aliases-drupal-8-redirects-part-2)
 source:
   plugin: cwd_node_path_redirect
   constants:
