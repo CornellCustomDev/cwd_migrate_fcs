@@ -8,6 +8,8 @@ use Drupal\migrate\Row;
 /**
  * Customize Drupal 7 URL aliases source from database for creating redirects
  * from old node aliases to the migated nodes on the destination site.
+ * Source: https://deninet.com/blog/2018/04/22/migrating-path-aliases-drupal-8-redirects-part-2
+ * (Source for related YML code: https://deninet.com/blog/2018/04/03/migrating-path-aliases-drupal-8-redirects-part-1)
  *
  * @MigrateSource(
  *   id = "cwd_node_path_redirect",
